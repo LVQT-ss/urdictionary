@@ -51,23 +51,15 @@ export function AuthProvider({ children }) {
 
   const register = async (email, password, fullName) => {
     try {
-      const { token, user: userData } = await registerUser({
+      await registerUser({
         email,
         password,
         full_name: fullName,
       });
-
-      // Save token first
-      localStorage.setItem("token", token);
-
-      // Then update user state
-      setUser(userData);
-
-      return userData;
+      // Don't store token or update user state after registration
+      return true;
     } catch (error) {
       console.error("Registration failed:", error);
-      localStorage.removeItem("token");
-      setUser(null);
       throw error;
     }
   };

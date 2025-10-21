@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/Layout";
 import AdminLayout from "../components/Admin/AdminLayout";
+import PublicRoute from "../components/Auth/PublicRoute";
 import Home from "../pages/Home";
 import Dictionary from "../pages/Dictionary";
 import Login from "../pages/Auth/Login";
@@ -29,11 +30,19 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login />,
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ),
       },
       {
         path: "register",
-        element: <Register />,
+        element: (
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        ),
       },
       {
         path: "premium",

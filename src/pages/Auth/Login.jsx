@@ -1,15 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccess(location.state.message);
+      // Clear the message from location state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +29,7 @@ function Login() {
     try {
       await login(email, password);
       navigate("/");
-    } catch (err) {
+    } catch (error) {
       setError("Email hoặc mật khẩu không đúng");
     } finally {
       setLoading(false);
@@ -29,6 +39,20 @@ function Login() {
   return (
     <div style={{ maxWidth: "400px", margin: "40px auto", padding: "20px" }}>
       <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Đăng nhập</h1>
+
+      {success && (
+        <div
+          style={{
+            padding: "10px",
+            background: "#efe",
+            color: "#080",
+            borderRadius: "4px",
+            marginBottom: "20px",
+          }}
+        >
+          {success}
+        </div>
+      )}
 
       {error && (
         <div

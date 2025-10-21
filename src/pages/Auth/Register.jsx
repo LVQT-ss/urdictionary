@@ -8,6 +8,7 @@ function Register() {
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -15,12 +16,25 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
     setLoading(true);
 
     try {
       await register(email, password, fullName);
-      navigate("/");
-    } catch (err) {
+      setSuccess(true);
+      // Clear form
+      setEmail("");
+      setPassword("");
+      setFullName("");
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        navigate("/login", {
+          state: {
+            message: "Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.",
+          },
+        });
+      }, 2000);
+    } catch (error) {
       setError("Không thể đăng ký. Vui lòng thử lại sau.");
     } finally {
       setLoading(false);
@@ -42,6 +56,20 @@ function Register() {
           }}
         >
           {error}
+        </div>
+      )}
+
+      {success && (
+        <div
+          style={{
+            padding: "10px",
+            background: "#efe",
+            color: "#080",
+            borderRadius: "4px",
+            marginBottom: "20px",
+          }}
+        >
+          Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...
         </div>
       )}
 

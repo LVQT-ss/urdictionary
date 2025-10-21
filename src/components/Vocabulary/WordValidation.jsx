@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { validateEnglishWord } from "../../utils/api";
 
-function WordValidation({ word }) {
+function WordValidation({ word, onValidationChange }) {
   const [wordDetails, setWordDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -11,6 +11,7 @@ function WordValidation({ word }) {
     if (!word) {
       setWordDetails(null);
       setError(null);
+      onValidationChange && onValidationChange(false);
       return;
     }
 
@@ -20,6 +21,7 @@ function WordValidation({ word }) {
         setError(null);
         const data = await validateEnglishWord(word);
         setWordDetails(data);
+        onValidationChange && onValidationChange(true);
 
         // Find the first available audio file
         const audioFile = data.phonetics?.find((p) => p.audio)?.audio;
@@ -30,13 +32,14 @@ function WordValidation({ word }) {
         setError(error.message || "Word not found in dictionary");
         setWordDetails(null);
         setAudio(null);
+        onValidationChange && onValidationChange(false);
       } finally {
         setLoading(false);
       }
     };
 
     validateWord();
-  }, [word]);
+  }, [word, onValidationChange]);
 
   const playAudio = () => {
     if (audio) {

@@ -7,6 +7,7 @@ import WordValidation from "./WordValidation";
 function AddVocabularyInput() {
   const [word, setWord] = useState("");
   const [debouncedWord, setDebouncedWord] = useState("");
+  const [isValidWord, setIsValidWord] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { addVocabulary, isLoading } = useVocabulary();
 
@@ -68,7 +69,7 @@ function AddVocabularyInput() {
         />
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !isValidWord}
           style={{
             padding: "10px 20px",
             marginLeft: "10px",
@@ -83,7 +84,12 @@ function AddVocabularyInput() {
         </button>
       </form>
       <div style={{ marginTop: "20px" }}>
-        {debouncedWord && <WordValidation word={debouncedWord} />}
+        {debouncedWord && (
+          <WordValidation
+            word={debouncedWord}
+            onValidationChange={setIsValidWord}
+          />
+        )}
       </div>
     </div>
   );

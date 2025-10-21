@@ -207,12 +207,12 @@ function DictionaryEntry({ vocabulary }) {
     <div style={entryStyle}>
       <div style={entryHeaderStyle}>
         <h4 style={entryWordStyle}>{vocabulary.word || "No word"}</h4>
-        <p style={entryPhoneticStyle}>{vocabulary.phonetic || "No phonetic"}</p>
+        {vocabulary.note && <p style={entryNoteStyle}>{vocabulary.note}</p>}
       </div>
 
       <div style={entryContentStyle}>
         <div style={meaningBlockStyle}>
-          <span style={meaningLabelStyle}>Meaning:</span>
+          <span style={meaningLabelStyle}>Note:</span>
           <span style={meaningTextStyle}>
             {vocabulary.meaning_vi || "No meaning"}
           </span>
@@ -386,12 +386,15 @@ const entryWordStyle = {
   fontFamily: "Georgia, serif",
 };
 
-const entryPhoneticStyle = {
-  margin: "0",
-  fontSize: "12px",
-  color: "#8b7355",
+const entryNoteStyle = {
+  margin: "4px 0 0 0",
+  fontSize: "13px",
+  color: "#6b5d52",
+  background: "#f8f6f3",
+  padding: "6px 10px",
+  borderRadius: "4px",
+  lineHeight: "1.4",
   fontStyle: "italic",
-  fontWeight: "500",
 };
 
 const entryContentStyle = {

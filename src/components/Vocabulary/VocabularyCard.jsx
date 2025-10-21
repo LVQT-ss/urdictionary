@@ -51,9 +51,7 @@ function VocabularyCard({ vocabulary, onDelete }) {
       <div style={wordHeaderStyle}>
         <div style={wordTitleStyle}>
           <h3 style={wordStyle}>{vocabulary.word}</h3>
-          {wordDetails?.phonetic && (
-            <span style={phoneticStyle}>{wordDetails.phonetic}</span>
-          )}
+          {vocabulary.note && <span style={noteStyle}>{vocabulary.note}</span>}
           {audio && (
             <button onClick={playAudio} style={audioButtonStyle}>
               🔊
@@ -118,10 +116,16 @@ const wordStyle = {
   color: "#2c3e50",
 };
 
-const phoneticStyle = {
-  fontSize: "16px",
+const noteStyle = {
+  fontSize: "14px",
   color: "#666",
-  fontStyle: "italic",
+  background: "#f8f9fa",
+  padding: "4px 8px",
+  borderRadius: "4px",
+  maxWidth: "300px",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 const audioButtonStyle = {

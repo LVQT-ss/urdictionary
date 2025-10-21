@@ -7,6 +7,7 @@ import WordValidation from "./WordValidation";
 
 function AddVocabularyInput() {
   const [word, setWord] = useState("");
+  const [note, setNote] = useState("");
   const [debouncedWord, setDebouncedWord] = useState("");
   const [isValidWord, setIsValidWord] = useState(false);
   const { user, loading: authLoading } = useAuth();
@@ -33,9 +34,11 @@ function AddVocabularyInput() {
       await addVocabulary({
         word: word.trim(),
         first_letter: firstLetter,
+        note: note.trim(),
       });
 
       setWord(""); // Clear input
+      setNote(""); // Clear note
       refreshVocabularyList(); // Trigger refresh of vocabulary list
       alert(`✅ Đã thêm "${word}" vào mục ${firstLetter}`);
     } catch (error) {
@@ -56,35 +59,65 @@ function AddVocabularyInput() {
   return (
     <div>
       <form onSubmit={handleSubmit} style={{ margin: "20px 0" }}>
-        <input
-          type="text"
-          value={word}
-          onChange={(e) => setWord(e.target.value)}
-          placeholder="Nhập từ vựng (VD: Effect)..."
-          style={{
-            padding: "10px",
-            width: "300px",
-            fontSize: "16px",
-            border: "2px solid #ddd",
-            borderRadius: "5px",
-          }}
-          disabled={isLoading}
-        />
-        <button
-          type="submit"
-          disabled={isLoading || !isValidWord}
-          style={{
-            padding: "10px 20px",
-            marginLeft: "10px",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          {isLoading ? "Đang lưu..." : "Thêm"}
-        </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div
+            style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                flex: 1,
+              }}
+            >
+              <input
+                type="text"
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+                placeholder="Nhập từ vựng (VD: Effect)..."
+                style={{
+                  padding: "10px",
+                  width: "100%",
+                  fontSize: "16px",
+                  border: "2px solid #ddd",
+                  borderRadius: "5px",
+                }}
+                disabled={isLoading}
+              />
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Ghi chú về từ này..."
+                style={{
+                  padding: "10px",
+                  width: "100%",
+                  fontSize: "16px",
+                  border: "2px solid #ddd",
+                  borderRadius: "5px",
+                  minHeight: "38px",
+                  resize: "vertical",
+                }}
+                disabled={isLoading}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading || !isValidWord}
+              style={{
+                padding: "10px 20px",
+                background: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                alignSelf: "flex-start",
+              }}
+            >
+              {isLoading ? "Đang lưu..." : "Thêm"}
+            </button>
+          </div>
+        </div>
       </form>
       <div style={{ marginTop: "20px" }}>
         {debouncedWord && (

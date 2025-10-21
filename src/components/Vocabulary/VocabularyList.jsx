@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { getAllVocabularies } from "../../utils/api";
+import { getAllVocabularies, deleteVocabulary } from "../../utils/api";
 import VocabularyCard from "./VocabularyCard";
 import Filter from "../Filter";
 
@@ -40,6 +40,18 @@ function VocabularyList() {
     setSearchFilter(search);
   };
 
+  const handleDelete = async (vocabularyId) => {
+    try {
+      await deleteVocabulary(vocabularyId);
+      setVocabularies((prevVocabularies) =>
+        prevVocabularies.filter((vocab) => vocab.id !== vocabularyId)
+      );
+    } catch (error) {
+      console.error("Failed to delete vocabulary:", error);
+      alert("Failed to delete vocabulary. Please try again.");
+    }
+  };
+
   return (
     <div>
       <Filter onFilterChange={handleFilterChange} />
@@ -55,7 +67,11 @@ function VocabularyList() {
       ) : (
         <div style={{ display: "grid", gap: "20px", padding: "20px" }}>
           {filteredVocabularies.map((vocabulary) => (
-            <VocabularyCard key={vocabulary.id} vocabulary={vocabulary} />
+            <VocabularyCard
+              key={vocabulary.id}
+              vocabulary={vocabulary}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}

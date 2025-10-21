@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { api } from "../utils/api";
 import PremiumBadge from "../components/Premium/PremiumBadge";
+import StreakBadge from "../components/StreakBadge";
 
 function Profile() {
   const { user, logout } = useAuth();
@@ -12,9 +13,7 @@ function Profile() {
 
   const [formData, setFormData] = useState({
     fullName: user?.full_name || "",
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+    bio: user?.bio || "",
   });
 
   if (!user) {
@@ -47,8 +46,7 @@ function Profile() {
 
       await api.put("/auth/profile", {
         full_name: formData.fullName,
-        current_password: formData.currentPassword,
-        new_password: formData.newPassword || undefined,
+        bio: formData.bio,
       });
 
       setSuccess("Cập nhật thông tin thành công");
@@ -69,12 +67,37 @@ function Profile() {
     <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px" }}>
       <div style={{ marginBottom: "30px" }}>
         <h1>Thông tin tài khoản</h1>
-        <p style={{ color: "#666" }}>{user.email}</p>
-        {user.is_premium && (
-          <div style={{ marginTop: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "12px",
+          }}
+        >
+          <p style={{ color: "#666", margin: 0 }}>{user.email}</p>
+          {user.is_premium && (
             <PremiumBadge expiresAt={user.premium_expires_at} />
+          )}
+          <StreakBadge
+            streak={user.streak}
+            longest_streak={user.longest_streak}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
+          <div style={statBoxStyle}>
+            <span style={statLabelStyle}>Ngày học liên tiếp</span>
+            <span style={statValueStyle}>{user.streak} ngày</span>
           </div>
-        )}
+          <div style={statBoxStyle}>
+            <span style={statLabelStyle}>Chuỗi dài nhất</span>
+            <span style={statValueStyle}>{user.longest_streak} ngày</span>
+          </div>
+          <div style={statBoxStyle}>
+            <span style={statLabelStyle}>Vai trò</span>
+            <span style={statValueStyle}>{user.role}</span>
+          </div>
+        </div>
       </div>
 
       {error && (
@@ -126,55 +149,21 @@ function Profile() {
 
         <div style={{ marginBottom: "20px" }}>
           <label style={{ display: "block", marginBottom: "5px" }}>
-            Mật khẩu hiện tại:
+            Giới thiệu:
           </label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
+          <textarea
+            name="bio"
+            value={formData.bio}
             onChange={handleChange}
             style={{
               width: "100%",
               padding: "8px",
               border: "1px solid #ddd",
               borderRadius: "4px",
+              minHeight: "100px",
+              resize: "vertical",
             }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
-          <label style={{ display: "block", marginBottom: "5px" }}>
-            Mật khẩu mới (không bắt buộc):
-          </label>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
-          <label style={{ display: "block", marginBottom: "5px" }}>
-            Xác nhận mật khẩu mới:
-          </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
+            placeholder="Viết một vài điều về bản thân..."
           />
         </div>
 
@@ -213,5 +202,28 @@ function Profile() {
     </div>
   );
 }
+
+const statBoxStyle = {
+  flex: 1,
+  padding: "15px",
+  background: "#f8f9fa",
+  borderRadius: "8px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "8px",
+};
+
+const statLabelStyle = {
+  fontSize: "12px",
+  color: "#666",
+  textAlign: "center",
+};
+
+const statValueStyle = {
+  fontSize: "18px",
+  fontWeight: "600",
+  color: "#2c3e50",
+};
 
 export default Profile;

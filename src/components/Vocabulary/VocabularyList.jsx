@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { getAllVocabularies, deleteVocabulary } from "../../utils/api";
+import { useVocabularyContext } from "../../context/VocabularyContext";
 import VocabularyCard from "./VocabularyCard";
 import Filter from "../Filter";
 
@@ -7,6 +8,7 @@ function VocabularyList() {
   const [vocabularies, setVocabularies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchFilter, setSearchFilter] = useState("");
+  const { refreshTrigger } = useVocabularyContext();
 
   const fetchVocabularies = useCallback(async () => {
     try {
@@ -22,7 +24,7 @@ function VocabularyList() {
 
   useEffect(() => {
     fetchVocabularies();
-  }, [fetchVocabularies]);
+  }, [fetchVocabularies, refreshTrigger]);
 
   // Filter vocabularies based on search term
   const filteredVocabularies = useMemo(() => {

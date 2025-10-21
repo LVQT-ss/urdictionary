@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import PremiumBadge from "../Premium/PremiumBadge";
+import StreakBadge from "../StreakBadge";
 
 function Header() {
   const { user, logout } = useAuth();
@@ -69,6 +70,10 @@ function Header() {
               {user.is_premium && (
                 <PremiumBadge expiresAt={user.premium_expires_at} />
               )}
+              <StreakBadge
+                streak={user.streak}
+                longest_streak={user.longest_streak}
+              />
               <Link
                 to="/profile"
                 style={{ textDecoration: "none", color: "#333" }}

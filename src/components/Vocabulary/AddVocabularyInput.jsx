@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useVocabulary } from "../../hooks/useVocabulary";
 import { useAuth } from "../../hooks/useAuth";
+import { useVocabularyContext } from "../../context/VocabularyContext";
 import WordValidation from "./WordValidation";
 
 function AddVocabularyInput() {
@@ -10,6 +11,7 @@ function AddVocabularyInput() {
   const [isValidWord, setIsValidWord] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { addVocabulary, isLoading } = useVocabulary();
+  const { refreshVocabularyList } = useVocabularyContext();
 
   // Debounce word input to avoid too many API calls
   useEffect(() => {
@@ -34,6 +36,7 @@ function AddVocabularyInput() {
       });
 
       setWord(""); // Clear input
+      refreshVocabularyList(); // Trigger refresh of vocabulary list
       alert(`✅ Đã thêm "${word}" vào mục ${firstLetter}`);
     } catch (error) {
       alert("❌ Lỗi: " + error.message);
